@@ -11,8 +11,10 @@ import subprocess
 import sys
 import threading
 import time
+import datetime
 import traceback
 import socket
+import psutil
 
 import n4d.responses
 
@@ -49,9 +51,11 @@ class Core:
 	DEBUG=False
 	VALID_AUTH_TYPES=[ANONYMOUS_AUTH,PAM_AUTH,KEY_AUTH]
 	SINGLETON=None
+	LOG_DIR="/var/log/n4d/"
 	RUN_DIR="/run/n4d/"
 	RUN_TOKEN="/run/n4d/token"
-	LOG_DIR="/var/log/n4d/"
+	ONESHOT_DIR="/var/lib/n4d/oneshot/"
+	ONESHOT_LOG=LOG_DIR+"oneshot.log"
 	ERROR_SLEEP_TIME=2
 
 	
@@ -125,6 +129,7 @@ class Core:
 		self.load_builtin_functions()
 		self.load_plugins()
 		self.execute_startups()
+		self.execute_oneshots()
 		
 	#def init
 		
@@ -181,6 +186,55 @@ class Core:
 					change = True
 		
 	#def startup_launcher
+	
+	
+	def execute_oneshots(self, wait_for_startups=True):
+		
+		self.oneshot_thread=threading.Thread(target=self._oneshot_launcher,args=(wait_for_startups,),name="N4d.Core.oneshots thread")
+		self.oneshot_thread.daemon=True
+		self.oneshot_thread.start()		
+		
+	#def execute_oneshots
+
+	
+	def _oneshot_launcher(self,wait_for_startups):
+		
+		sleep_time=2
+		
+		one_shot_list=os.listdir(Core.ONESHOT_DIR)
+		if one_shot_list < 1:
+			return True
+		
+		# wait for startups
+		if wait_for_startups:
+			while self.startup_thread.is_alive():
+				time.sleep(sleep_time)
+				
+		#wait for dpkgs to end
+		while self.find_process("dpkg"):
+			time.sleep(sleep_time)
+			
+		for item in one_shot_list:
+			print("\t" + str(item) + "...")
+			date=datetime.datetime.now().strftime("[%D %H:%M:%S]")
+			ret=os.system(Core.ONESHOT_DIR+item)
+			
+			if ret==0:
+				status="OK"
+			else:
+				status="FAILED WITH EXIT STATUS " + str(ret)
+			
+			msg="%s %s\t%s\n"%(date,str(item),status)	
+			
+			with open(Core.ONESHOT_LOG,"a") as f:
+				f.write(msg)
+				
+			try:
+				os.remove(Core.ONESHOT_DIR+item)
+			except:
+				pass		
+		
+	#def _oneshot_launcher
 
 	# ####################  #
 	# DEBUG PRINTING FUNCTIONS #
@@ -206,6 +260,22 @@ class Core:
 			print("[%s] %s"%(plugin_name,str(data)))
 		
 	#def pprint
+	
+	# ###################### #
+	# PROCESS LIST RELATED FUNCTS  #
+	
+	def find_process(self,name,strict=True):
+		
+		for proc in psutil.process_iter():
+			if strict:
+				if name.lower()== proc.name().lower():
+					return True
+			else:
+				if name.lower() in proc.name().lower():
+					return True
+		return False
+		
+	#def find_process
 	
 	# ###################### #
 	# NETWORK RELATED FUNCTIONS #
@@ -359,6 +429,9 @@ class Core:
 				
 			if not os.path.exists(Core.LOG_DIR):
 				os.makedirs(Core.LOG_DIR)
+			
+			if not os.path.exists(Core.ONESHOT_DIR):
+				os.makedirs(Core.ONESHOT_DIR)
 				
 			return True
 			
