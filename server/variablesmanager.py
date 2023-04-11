@@ -385,9 +385,13 @@ class VariablesManager:
 		
 	#def get_variable
 	
-	def get_variable_list(self,variable_list=[],full_info=False):
+	def get_variable_list(self,variable_list=None,full_info=None):
 	
 		ret={}
+		if variable_list==None or not isinstance(variable_list,list):
+			variable_list=[]
+		if full_info==None:
+			full_info=False
 		
 		for variable in variable_list:
 			tmp=self.get_variable(variable,full_info)

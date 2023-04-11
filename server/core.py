@@ -724,9 +724,12 @@ class Core:
 	
 	#def anonymous_auth
 	
-	def builtin_validation(self,auth,extra_valid_group_list=[]):
+	def builtin_validation(self,auth,extra_valid_group_list=None):
 		
 		#used by core built-ins
+
+		if not extra_valid_group_list:
+			extra_valid_group_list=[]
 
 		USER_NOT_VALIDATED=-5
 		USER_NOT_ALLOWED=-10
