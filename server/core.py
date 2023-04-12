@@ -192,7 +192,9 @@ class Core:
 		
 		self.oneshot_thread=threading.Thread(target=self._oneshot_launcher,args=(wait_for_startups,),name="N4d.Core.oneshots thread")
 		self.oneshot_thread.daemon=True
-		self.oneshot_thread.start()		
+		self.oneshot_thread.start()
+		
+		return n4d.responses.build_successful_call_response()
 		
 	#def execute_oneshots
 
