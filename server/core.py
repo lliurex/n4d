@@ -196,13 +196,12 @@ class Core:
 		
 	#def execute_oneshots
 
-	
 	def _oneshot_launcher(self,wait_for_startups):
 		
 		sleep_time=2
 		
-		one_shot_list=os.listdir(Core.ONESHOT_DIR)
-		if one_shot_list < 1:
+		one_shot_list=sorted(os.listdir(Core.ONESHOT_DIR))
+		if len(one_shot_list) < 1:
 			return True
 		
 		# wait for startups
@@ -210,19 +209,23 @@ class Core:
 			while self.startup_thread.is_alive():
 				time.sleep(sleep_time)
 				
-		#wait for dpkgs to end
+		# wait for dpkgs to end
 		while self.find_process("dpkg"):
 			time.sleep(sleep_time)
-			
-		for item in one_shot_list:
-			print("\t" + str(item) + "...")
+		
+		self.dprint("Executing %s oneshots..."%len(one_shot_list))
+		for item in enumerate(one_shot_list):
+			counter,item=item
+			self.dprint("[ONESHOT] Executing " + str(item) + " ...")
 			date=datetime.datetime.now().strftime("[%D %H:%M:%S]")
-			ret=os.system(Core.ONESHOT_DIR+item)
+			#ret=os.system(Core.ONESHOT_DIR+item)
+			ret=subprocess.run([Core.ONESHOT_DIR+item],shell=True,capture_output=True)
 			
-			if ret==0:
+			
+			if ret.returncode==0:
 				status="OK"
 			else:
-				status="FAILED WITH EXIT STATUS " + str(ret)
+				status="[%s] FAILED. %s"%(ret.returncode,ret.stderr.decode("utf-8").strip())
 			
 			msg="%s %s\t%s\n"%(date,str(item),status)	
 			
@@ -234,7 +237,10 @@ class Core:
 			except:
 				pass		
 		
+		return True
+		
 	#def _oneshot_launcher
+	
 
 	# ####################  #
 	# DEBUG PRINTING FUNCTIONS #
