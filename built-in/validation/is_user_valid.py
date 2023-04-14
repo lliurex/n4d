@@ -1,7 +1,10 @@
-def is_user_valid(self,user,password,group_list=[]):
+def is_user_valid(self,user,password,group_list=None):
 	
 	#internal core function
 	ret=self.validate_auth((user,password))
+	
+	if not group_list:
+		group_list=[]
 	
 	if ret["status"]==0:
 		
