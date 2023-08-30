@@ -1,0 +1,404 @@
+n4d (0.951) focal; urgency=medium
+
+  * Fixing name collision with imports
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 16 Feb 2023 09:59:16 +0100
+
+n4d (0.950) focal; urgency=medium
+
+  * Warning specifies which method is missing allowed_groups configuration
+    entry.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 11 Oct 2021 11:13:12 +0200
+
+n4d (0.949) focal; urgency=medium
+
+  * get_methods moved to core. It now supports a class filter.
+  * Fixed some failed call returns.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 11 Oct 2021 10:18:32 +0200
+
+n4d (0.948) focal; urgency=medium
+
+  * Supporting secondary listening port if needed.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 06 Oct 2021 09:15:43 +0200
+
+n4d (0.947) focal; urgency=medium
+
+  * Fixed is_user_valid responses
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 28 Sep 2021 12:06:55 +0200
+
+n4d (0.946.1) focal; urgency=medium
+
+  * Fixed syntax error in is_valid_user
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 28 Sep 2021 10:44:32 +0200
+
+n4d (0.946) focal; urgency=medium
+
+  * n4d-modules loads/unloads plugins when the service is online only.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 28 Sep 2021 10:29:23 +0200
+
+n4d (0.945) focal; urgency=medium
+
+  * Added remote_server functionality for individual variables
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 03 Aug 2021 12:34:15 +0200
+
+n4d (0.944.1) focal; urgency=medium
+
+  * minor changes in dispatch error output
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 30 Jul 2021 14:05:42 +0200
+
+n4d (0.944) focal; urgency=medium
+
+  * Added built-in methods to get_methods
+  * dprint dispatch errors
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 30 Jul 2021 13:40:48 +0200
+
+n4d (0.943) focal; urgency=medium
+
+  * MAking sure class startup is executed when loaded in runtime
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 14 Jul 2021 17:41:14 +0200
+
+n4d (0.942) focal; urgency=medium
+
+  * Making sure n4d is up when running n4d-vars
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 12 Jul 2021 09:21:59 +0200
+
+n4d (0.941) focal; urgency=medium
+
+  * Fixed built in sourcing. uses split instead of strip
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 06 Jul 2021 17:11:32 +0200
+
+n4d (0.940) focal; urgency=medium
+
+  * updated setup.py with n4d newer release version. this should be automated.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 06 Jul 2021 15:51:27 +0200
+
+n4d (0.939) focal; urgency=medium
+
+  * Added Core.get_ip_from_host 
+  * Making sure if REMOTE_VARIABLES_SERVER is a host name, it isn't pointing 
+    to local server.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 06 Jul 2021 15:41:56 +0200
+
+n4d (0.938) focal; urgency=medium
+
+  * Fixed missing tarfile import in VariablesManager
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 06 Jul 2021 13:17:12 +0200
+
+n4d (0.937) focal; urgency=medium
+
+  * Added backup/restore functions to VariablesManager
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 02 Jul 2021 14:32:43 +0200
+
+n4d (0.936) focal; urgency=medium
+
+  * Fixed create_ticket failed response
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 25 Jun 2021 22:11:26 +0200
+
+n4d (0.935) focal; urgency=medium
+
+  * Making sure we create a ticket for a valid user.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 21 Jun 2021 14:47:26 +0200
+
+n4d (0.934) focal; urgency=medium
+
+  * Fixed bug in variablesmanager where when saving volatile variables, lock
+    file wouldn't get deleted
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 18 Jun 2021 09:38:45 +0200
+
+n4d (0.933) focal; urgency=medium
+
+  * New way to extract user groups, supporting AD users
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 14 Jun 2021 10:28:30 +0200
+
+n4d (0.932) focal; urgency=medium
+
+  * n4d-create-conf: removing _ starting methods from configuration files
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 07 Jun 2021 13:20:51 +0200
+
+n4d (0.931) focal; urgency=medium
+
+  * set_variable also deepcopies it, just in case we run into problems
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 04 Jun 2021 15:31:17 +0200
+
+n4d (0.930) focal; urgency=medium
+
+  * Fixed n4d-modules main function. Using self when it should be using
+    previously created object.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 27 May 2021 14:10:12 +0200
+
+n4d (0.929) focal; urgency=medium
+
+  * Minor changes in variablesmanager
+  * n4d_mv and n4d_get_user and get_backup_name removed from core. available 
+    in n4d.utils
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 27 May 2021 12:15:59 +0200
+
+n4d (0.928.1) focal; urgency=medium
+
+  * Making sure package n4d depends on current python3-n4d build version
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 20 Apr 2021 10:51:35 +0200
+
+n4d (0.928) focal; urgency=medium
+
+  * Making sure allowed_groups is in plugin conf file
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 20 Apr 2021 10:09:47 +0200
+
+n4d (0.927) focal; urgency=medium
+
+  * Given names to every thread used by n4d for better debugging
+  * Added is_plugin_available function
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 15 Apr 2021 11:24:17 +0200
+
+n4d (0.926) focal; urgency=medium
+
+  * Reduced register_sleep_time
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 23 Mar 2021 11:00:38 +0100
+
+n4d (0.925) focal; urgency=medium
+
+  * Fixed server_changed. Core is not available but self is (!?). Something I
+    should look into some day.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 23 Mar 2021 10:42:07 +0100
+
+n4d (0.924) focal; urgency=medium
+
+  * Fixed triggers execution. both in server and clients
+  * Added execute_triggers function in variablesmanager. Server_changed now
+    uses it instead of cooking its own version.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 23 Mar 2021 10:02:28 +0100
+
+n4d (0.923) focal; urgency=medium
+
+  * Fixed client_register
+  * pam authentication from login to common-auth
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 15 Mar 2021 12:21:19 +0100
+
+n4d (0.922) focal; urgency=medium
+
+  * Added backup_timestamp function
+  * n4d-vars offline get_vars functional
+  * minor bugs and esthetic print changes
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 17 Feb 2021 09:40:14 +0100
+
+n4d (0.921) focal; urgency=medium
+
+  * Added n4d_mv to core as a developer helper function
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 12 Feb 2021 13:38:02 +0100
+
+n4d (0.920.1) focal; urgency=medium
+
+  * Removed \n in n4d-modules when printing OK
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 10 Feb 2021 14:30:25 +0100
+
+n4d (0.920) focal; urgency=medium
+
+  * Making sure REMOTE_VARIABLES_SERVER is not used if None
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 10 Feb 2021 11:24:46 +0100
+
+n4d (0.919) focal; urgency=medium
+
+  * Removed ret check in n4d-modules
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 10 Feb 2021 11:01:47 +0100
+
+n4d (0.918) focal; urgency=medium
+
+  * Adding 127.0.1.1 to get_all_ips. Making sure variablesmanager doesn't end
+    up in a loop if its REMOTE_VARIABLE_SERVER resolves to itself
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 10 Feb 2021 08:46:16 +0100
+
+n4d (0.917.5) focal; urgency=medium
+
+  * Try excepting n4d-modules calls
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 08 Feb 2021 10:09:26 +0100
+
+n4d (0.917.4) focal; urgency=medium
+
+  * Fixed variablesmanager.set_attr
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 08 Feb 2021 08:53:16 +0100
+
+n4d (0.917.3) focal; urgency=medium
+
+  * Fixed typo in core.get_client_list
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 04 Feb 2021 14:12:35 +0100
+
+n4d (0.917.2) focal; urgency=medium
+
+  * Fixed n4d-vars read_key call
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 29 Jan 2021 09:24:53 +0100
+
+n4d (0.917.1) focal; urgency=medium
+
+  * Fixed typo 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 28 Jan 2021 22:34:41 +0100
+
+n4d (0.917) focal; urgency=medium
+
+  * Making sure you can't call plugin functions from classes that failed to
+    initialize.
+  * Json parsing now dprints reason why it fails 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 28 Jan 2021 15:07:04 +0100
+
+n4d (0.916) focal; urgency=medium
+
+  * Raising authentication exceptions
+  * Bug fixes when checking allowed_users
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 28 Jan 2021 13:12:31 +0100
+
+n4d (0.915) focal; urgency=medium
+
+  * Improvements error handling when parsing n4d call arguments
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 28 Jan 2021 12:53:34 +0100
+
+n4d (0.914) focal; urgency=medium
+
+  * Fixed imports in built-in functions
+  * bug fixes
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 28 Jan 2021 12:07:53 +0100
+
+n4d (0.912.1) focal; urgency=medium
+
+  * Making arguments check error easier to understand
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 28 Jan 2021 11:22:58 +0100
+
+n4d (0.912) focal; urgency=medium
+
+  * Added arguments check before executing exported function
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 27 Jan 2021 16:42:12 +0100
+
+n4d (0.911) focal; urgency=medium
+
+  * Added get_version built-in function
+  * Exported unload_plugin function via built-in function
+  * changed failed_call and unhandled_error response API
+  * removed TypeError exception handling for now
+  * Bug fixes
+  * [Raul] fixed dh_n4dvars. no longer installs variable file in
+    /var/lib/n4d/variables. It only uses inbox directory
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 25 Jan 2021 15:01:02 +0100
+
+n4d (0.910) focal; urgency=medium
+
+  * Adding get_variables_list function
+  * n4d-vars cli ready 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 25 Jan 2021 14:12:11 +0100
+
+n4d (0.908) focal; urgency=medium
+
+  * Built-in subdirectory support
+  * fixed missing import in n4d-modules
+  * fixed variable_exists bug
+  * Added more checks to validate if a class is loaded or not
+  * Exporting clientmanager functions via built-ins
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 25 Jan 2021 10:35:43 +0100
+
+n4d (0.907) focal; urgency=medium
+
+  * bug fixes in read_inbox
+  * n4d-modules cli should be functional
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 19 Jan 2021 13:45:39 +0100
+
+n4d (0.906) focal; urgency=medium
+
+  * [Raul] Added n4d.utils
+  * read_inbox supports multiple variables defined in a single file
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 19 Jan 2021 10:36:17 +0100
+
+n4d (0.905) focal; urgency=medium
+
+  * Added variable_exists built-in
+  * clientmanager is now part of n4d.server
+  * built-in functions now support protected_user and protected_ip
+  * Bug fixes
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 15 Jan 2021 16:30:14 +0100
+
+n4d (0.904) focal; urgency=medium
+
+  * [Raul] Added n4d-dev helper.
+  * Added n4d-vars (WIP)
+  * Added empty_trash support
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 15 Jan 2021 08:56:38 +0100
+
+n4d (0.903) focal; urgency=medium
+
+  * Added python3-n4d-base package
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 13 Jan 2021 14:41:51 +0100
+
+n4d (0.901.1) focal; urgency=medium
+
+  * Build-depends
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 13 Jan 2021 10:31:25 +0100
+
+n4d (0.901) focal; urgency=medium
+
+  * Added n4d-modules to load and unload plugins on the fly
+  * Added n4d-create-conf executable to help create conf files
+  * Added allowed_users support
+  * Added inbox support
+  * ClientManager functions to check client list
+  * Better exceptions handling
+  * Bug fixes
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 13 Jan 2021 09:39:38 +0100
+
+n4d (0.900) bionic; urgency=medium
+
+  * Initial release.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 23 Nov 2020 12:59:21 +0100
