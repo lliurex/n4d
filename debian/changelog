@@ -1,3 +1,9 @@
+n4d (0.1951) jammy; urgency=medium
+
+  * Initial release for jammy
+
+ -- Juan Ramon Pelegrina <juapesai@hotmail.com>  Wed, 30 Aug 2023 12:51:48 +0200
+
 n4d (0.951) focal; urgency=medium
 
   * Fixing name collision with imports
