@@ -1,3 +1,9 @@
+n4d (0.953) focal; urgency=medium
+
+  * Escaping & characters
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 16 Jul 2024 10:43:54 +0200
+
 n4d (0.952) focal; urgency=medium
 
   * Restored oneshot functionality. built-in function execute_oneshots or
