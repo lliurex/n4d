@@ -95,13 +95,19 @@ class N4dServer:
 		def process_request_thread(self,request,client_address):
 			
 			ThreadingMixIn.process_request_thread(self,request,client_address)
+			
+		def escape_forbidden_chars(self,data):
+			
+			if b"&" in data and b"&amp;" not in data:
+				data=data.replace(b"&",b"&amp;")
+			return data
 		
 		def _marshaled_dispatch(self, data, dispatch_method = None, path = None, n4d_extra_info=None):
 
 			self.allow_none=True
 			try:
-
-				params, method = xmlrpc.client.loads(data)
+				new_data=self.escape_forbidden_chars(data)
+				params, method = xmlrpc.client.loads(new_data)
 				params=(n4d_extra_info,)+params
 
 				if dispatch_method is not None:
