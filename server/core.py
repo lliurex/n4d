@@ -1,5 +1,5 @@
-import imp
 import inspect
+from importlib.machinery import SourceFileLoader
 import netifaces
 import glob
 import os
@@ -521,7 +521,8 @@ class Core:
 			if verbose:
 				self.dstdout("\t\t%s ... "%plugin)
 			try:
-				class_=imp.load_source(plugin+"_n4d",self.plugin_manager.plugins[plugin]["plugin_path"])
+				#class_=imp.load_source(plugin+"_n4d",self.plugin_manager.plugins[plugin]["plugin_path"])
+				class_= SourceFileLoader(plugin+"_n4d",self.plugin_manager.plugins[plugin]["plugin_path"]).load_module()
 				self.plugin_manager.plugins[plugin]["object"]=getattr(class_,plugin)()
 				if verbose:
 					self.dstdout("OK\n")
