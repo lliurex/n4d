@@ -1,3 +1,9 @@
+n4d (0.1953) jammy; urgency=medium
+
+  * adding set_value function in n4d-vars 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 22 Oct 2024 09:32:10 +0200
+
 n4d (0.1952) jammy; urgency=medium
 
   * escaping & characters from call data 
