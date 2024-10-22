@@ -160,8 +160,16 @@ class N4dVars:
 	#def offline_getvars
 	
 	def set_value(self,vname,value):
-		
-		print("set_value function not ready yet")
+		key=self.read_key()
+		if key==None:
+			print("[!] Error reading n4d key to perform the operation")
+			return -1
+			
+		ret=self.client.set_variable(key,vname,value)
+		if self.is_status_ok(ret):
+			return 0
+			
+		return -1
 		
 	#def 
 	
