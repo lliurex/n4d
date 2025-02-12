@@ -9,6 +9,7 @@ import ssl
 import sys
 import traceback
 import threading
+import systemd.daemon 
 
 import locale
 locale.setlocale(locale.LC_ALL, 'C.UTF-8')
@@ -91,6 +92,14 @@ class N4dServer:
 				self.wfile.write(response)
 
 	class ThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
+
+		def service_actions(self):
+			
+			if not self.running:
+				self.running=True
+				systemd.daemon.notify("READY=1")
+				
+		#def service_actions
 		
 		def process_request_thread(self,request,client_address):
 			
@@ -144,6 +153,7 @@ class N4dServer:
 		self.server=N4dServer.ThreadedXMLRPCServer((host,port),self.handler,DEBUG)
 		#allow_none
 		SimpleXMLRPCDispatcher.__init__(self.server,allow_none=True)
+		self.server.running=False
 		
 		self.wrap_ssl()
 		self.server.register_instance(self.core)
