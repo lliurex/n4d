@@ -1,3 +1,10 @@
+n4d (0.1954) jammy; urgency=medium
+
+  * Service changed to type=notify. systemd asumes service is started when n4d
+    is listening.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 14 Feb 2025 13:04:39 +0100
+
 n4d (0.1953) jammy; urgency=medium
 
   * adding set_value function in n4d-vars 
