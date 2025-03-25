@@ -30,6 +30,7 @@ class PamManager:
 			try:
 				self.auth.authenticate()
 				self.auth.acct_mgmt()
+				ret_queue.put(True)
 			except Exception as e:
 				ret_queue.put(False)
 			
