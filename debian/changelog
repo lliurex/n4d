@@ -1,6 +1,6 @@
 n4d (0.1956) jammy; urgency=medium
 
-  * pam_auth to multiprocessing 
+  * pam_auth to multiprocessing. 
 
  -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 25 Mar 2025 12:24:36 +0100
 
