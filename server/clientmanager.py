@@ -188,7 +188,7 @@ class ClientManager:
 			
 		if self.clients[machine_id]["missed_pings"]>=3:
 			client=self.clients.pop(machine_id)
-			return return n4d.responses.build_failed_call_response(client,"Client has been dropped")
+			return n4d.responses.build_failed_call_response(client,"Client has been dropped")
 		
 		return n4d.responses.build_successful_call_response(self.clients[machine_id])
 			
