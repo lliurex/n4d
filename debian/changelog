@@ -1,3 +1,10 @@
+n4d (0.1957) jammy; urgency=medium
+
+  * better clientmanager management
+  * added get_machine_id built-in function 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 01 Apr 2025 11:58:11 +0200
+
 n4d (0.1956) jammy; urgency=medium
 
   * pam_auth to multiprocessing
