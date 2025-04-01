@@ -1206,6 +1206,12 @@ class Core:
 		
 	#def get_client_list
 	
+	def get_machine_id(self):
+		
+		return sef.clients_manager.get_machine_id()
+		
+	#def get_machine_id
+	
 	
 
 	
