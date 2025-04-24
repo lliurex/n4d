@@ -1,6 +1,14 @@
-n4d (1.1ubuntu1) UNRELEASED; urgency=medium
+n4d (1.2) noble; urgency=medium
 
-  * backport of last master changes. 
+  * backport of last master changes.
+    * escaping & characters from call data
+    * adding set_value function in n4d-vars
+    * Service changed to type=notify. systemd asumes service is started when n4d
+    is listening.
+    * Add set-value offline in n4d-vars
+    * pam_auth to multiprocessing
+    * better clientmanager management
+    * added get_machine_id built-in function   
 
  -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 24 Apr 2025 10:59:48 +0200
 
