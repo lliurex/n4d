@@ -174,7 +174,9 @@ class N4dServer:
 		SimpleXMLRPCDispatcher.__init__(self.secondary_server,allow_none=True)
 		
 		if ssl_wrapped:
-			self.secondary_server.socket=ssl.wrap_socket(self.secondary_server.socket,N4dServer.N4D_KEYFILE,N4dServer.N4D_CERTFILE)
+			context = ssl.SSLContext( ssl.PROTOCOL_TLS_SERVER )
+			context.load_cert_chain( N4dServer.N4D_CERTFILE, N4dServer.N4D_KEYFILE )
+			self.secondary_server.socket = context.wrap_socket( self.secondary_server.socket )
 			
 		self.secondary_server.register_instance(self.core)
 			
@@ -184,7 +186,9 @@ class N4dServer:
 	def wrap_ssl(self):
 		
 		if N4dServer.SECURE_SERVER:
-			self.server.socket=ssl.wrap_socket(self.server.socket,N4dServer.N4D_KEYFILE,N4dServer.N4D_CERTFILE)
+			context = ssl.SSLContext( ssl.PROTOCOL_TLS_SERVER )
+			context.load_cert_chain( N4dServer.N4D_CERTFILE, N4dServer.N4D_KEYFILE )
+			self.server.socket=context.wrap_socket(self.server.socket)
 			
 		self.is_server_secured=N4dServer.SECURE_SERVER
 			
