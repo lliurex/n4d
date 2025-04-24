@@ -12,6 +12,8 @@ import n4d.server.core
 class ClientManager:
 	
 	REGISTER_SLEEP_TIME=60*3
+	CHECK_CLIENTS_SLEEP_TIME=60*3
+	MAX_MISSED_PINGS=3
 	RUN_DIR="/run/n4d/clients/"
 	CLIENTS_FILE=RUN_DIR+"clients.json"
 	MACHINE_FILE="/etc/machine-id"
@@ -21,16 +23,18 @@ class ClientManager:
 		self.clients={}
 		self.core=n4d.server.core.Core.get_core()
 		self.server_id=None
+		self.saving_lock=threading.Lock()
 		if not os.path.exists(ClientManager.RUN_DIR):
 			os.makedirs(ClientManager.RUN_DIR)
 		self.load_clients_file()
 		self.start_register_to_server_thread()
+		self.start_check_clients_thread()
 		
 	#def __init__
 	
 	def startup(self,options):
 
-		pass
+		self.start_check_clients_thread()
 		
 	#def startup
 	
@@ -45,6 +49,21 @@ class ClientManager:
 		self.register_thread.start()
 		
 	#def start_register
+	
+	def get_machine_id(self):
+		
+		machine_id=None
+		try:
+			f=open(ClientManager.MACHINE_FILE)
+			machine_id=f.readline().strip("\n")
+			f.close()
+		except:
+			pass
+		
+		return  n4d.responses.build_successful_call_response(machine_id)
+		
+	#def get_machine_id
+	
 	
 	def register_to_server(self):
 		
@@ -64,12 +83,11 @@ class ClientManager:
 						context=ssl._create_unverified_context()
 						c = xmlrpc.client.ServerProxy('https://%s:9779'%server_ip,context=context,allow_none=True)
 						mac=self.core.get_mac_from_device(self.core.route_get_ip(server_ip))
-						f=open(ClientManager.MACHINE_FILE)
-						machine_id=f.readline().strip("\n")
-						f.close()
-						ret=c.register_client("",mac,machine_id)
-						if ret["status"]==0:
-							self.server_id=ret["return"]
+						machine_id=self.get_machine_id()["return"]
+						if machine_id!=None:
+							ret=c.register_client("",mac,machine_id)
+							if ret["status"]==0:
+								self.server_id=ret["return"]
 				
 			except Exception as e:
 				self.dprint(e)
@@ -97,10 +115,14 @@ class ClientManager:
 	
 	def save_clients_file(self):
 		
+		self.saving_lock.acquire()
+		
 		f=open(ClientManager.CLIENTS_FILE,"w")
 		data=json.dumps(self.clients,indent=4,ensure_ascii=False)
 		f.write(data)
 		f.close()
+		
+		self.saving_lock.release()
 		
 		return True
 
@@ -131,13 +153,15 @@ class ClientManager:
 	def check_clients(self,wait_for_result=False):
 		
 		if not wait_for_result:
-			for machine_id in self.clients:
+			clients_keys=list(self.clients)
+			for machine_id in clients_keys:
 				t=threading.Thread(target=self.check_client,args=(machine_id,),name="N4d.ClientManager.check_clients thread")
 				t.daemon=True
 				t.start()
 			return n4d.responses.build_successful_call_response(self.clients,"check_clients thread launched. Current variable is probably not up to date")
 		else:
-			for machine_id in self.clients:
+			clients_keys=list(self.clients)
+			for machine_id in clients_keys:
 				self.check_client(machine_id)
 			return n4d.responses.build_successful_call_response(self.clients)
 		
@@ -145,17 +169,75 @@ class ClientManager:
 	
 	def check_client(self,machine_id):
 		
-		ip=self.clients[machine_id]["ip"]
-		context=ssl._create_unverified_context()
-		self.clients[machine_id]["last_check"]=int(time.time())
-		try:
-			c = xmlrpc.client.ServerProxy('https://%s:9779'%ip,context=context,allow_none=True)
-			c.get_methods()
-			self.clients[machine_id]["missed_pings"]=0
-		except:
-			self.clients[machine_id]["missed_pings"]+=1
+		client=None
+		
+		if machine_id in self.clients:
 			
-		return n4d.responses.build_successful_call_response(self.clients[machine_id])
+			ip=self.clients[machine_id]["ip"]
+			context=ssl._create_unverified_context()
+			if machine_id not in self.clients:
+				return n4d.responses.build_failed_call_response(machine_id,"Machine ID not ound")
+			self.clients[machine_id]["last_check"]=int(time.time())
+			try:
+				c = xmlrpc.client.ServerProxy('https://%s:9779'%ip,context=context,allow_none=True)
+				# Backup plan
+				c.get_methods()
+				self.clients[machine_id]["missed_pings"]=0
+				# client responds. lets try to check machine_id
+				try:
+					ret=c.get_machine_id()
+					client_machine_id=ret["return"]
+					if client_machine_id == None:
+						pass
+					elif machine_id != client_machine_id:
+						# looks like machine_id/ip combo has changed.
+						if machine_id in self.clients:
+							self.saving_lock.acquire()
+							self.clients[client_machine_id]=self.clients[machine_id].copy()
+							self.clients.pop(machine_id)
+							self.saving_lock.release()
+							self.save_clients_file()
+							machine_id=client_machine_id
+				except Exception as e:
+					if machine_id in self.clients:
+						self.clients[machine_id]["missed_pings"]+=1
+				
+			except:
+				if machine_id in self.clients:
+					self.clients[machine_id]["missed_pings"]+=1
+			
+			if machine_id in self.clients:
+				if self.clients[machine_id]["missed_pings"]>=3:
+					self.saving_lock.acquire()
+					if machine_id in self.clients:
+						client=self.clients.pop(machine_id)
+					self.saving_lock.release()
+					self.save_clients_file()
+					return n4d.responses.build_failed_call_response(client,"Client has been dropped")
+			
+		
+		if machine_id in self.clients:
+			client=self.clients[machine_id]
+			return n4d.responses.build_successful_call_response(client)
+		else:
+			return n4d.responses.build_failed_call_response(None,"Client has been dropped")
 			
 	#def check_client
+	
+	def start_check_clients_thread(self):
+		
+		t=threading.Thread(target=self.check_clients_thread)
+		t.daemon=True
+		t.start()
+		
+	#def start_check_clients_thread
+	
+	def check_clients_thread(self):
+		
+		while True:
+			self.check_clients()
+			time.sleep(ClientManager.CHECK_CLIENTS_SLEEP_TIME)
+			#print(self.clients)
+			
+	#def check_clients_thread
 	

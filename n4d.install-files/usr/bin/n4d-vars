@@ -6,6 +6,9 @@ import n4d.responses
 import sys
 import os
 import json
+from pathlib import Path
+import dbus
+import time
 
 VARIABLES_DIR="/var/lib/n4d/variables/"
 
@@ -86,6 +89,9 @@ class N4dVars:
 							sys.exit(0)
 						if self.is_n4d_running():
 							self.set_value(var,value)
+						else:
+							print("modo offline")
+							self.set_value_offline(var,value)
 						
 					if data[1]=="readinbox":
 						if self.is_n4d_running():
@@ -131,7 +137,45 @@ class N4dVars:
 		return -1
 		
 	#def get_variable
-	
+
+	def set_value_offline( self, var, value ):
+		var_path = Path(VARIABLES_DIR + var )
+		dest_path = Path( "/var/lib/n4d/variables-inbox/" + var )
+		if var_path.exists():
+			with var_path.open('r',encoding='utf-8') as fd:
+				data = json.load(fd)
+			data[var]['value'] = value
+		else:
+			data = {}
+			data[var]  = {"value": value, "volatile": False}
+		data[var]["force_update"] = True
+
+		bus = dbus.SystemBus()
+		systemd = bus.get_object("org.freedesktop.systemd1","/org/freedesktop/systemd1")
+		manager = dbus.Interface(systemd, "org.freedesktop.systemd1.Manager")
+		n4d_path = manager.GetUnit("n4d.service")
+		n4d_obj = bus.get_object("org.freedesktop.systemd1", n4d_path)
+
+		props = dbus.Interface(n4d_obj, "org.freedesktop.DBus.Properties")
+		state = props.Get("org.freedesktop.systemd1.Unit","ActiveState")
+
+		need_read_inbox = False
+		loop_n4d = False
+		if state == "active":
+			need_read_inbox = True
+		if not self.is_n4d_running():
+			loop_n4d = True
+		with dest_path.open('w', encoding='utf-8') as fd:
+			json.dump( data, fd, indent=4 )
+
+		if need_read_inbox:
+			if loop_n4d:
+				for x in range(1,10):
+					time.sleep(0.5)
+					if self.is_n4d_running:
+						break
+			self.read_inbox()
+
 	def offline_getvars(self,var_list=[]):
 		
 		ret={}
@@ -160,8 +204,16 @@ class N4dVars:
 	#def offline_getvars
 	
 	def set_value(self,vname,value):
-		
-		print("set_value function not ready yet")
+		key=self.read_key()
+		if key==None:
+			print("[!] Error reading n4d key to perform the operation")
+			return -1
+			
+		ret=self.client.set_variable(key,vname,value)
+		if self.is_status_ok(ret):
+			return 0
+			
+		return -1
 		
 	#def 
 	

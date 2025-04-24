@@ -9,6 +9,7 @@ import ssl
 import sys
 import traceback
 import threading
+import systemd.daemon 
 
 import locale
 locale.setlocale(locale.LC_ALL, 'C.UTF-8')
@@ -91,17 +92,31 @@ class N4dServer:
 				self.wfile.write(response)
 
 	class ThreadedXMLRPCServer(ThreadingMixIn, SimpleXMLRPCServer):
+
+		def service_actions(self):
+			
+			if not self.running:
+				self.running=True
+				systemd.daemon.notify("READY=1")
+				
+		#def service_actions
 		
 		def process_request_thread(self,request,client_address):
 			
 			ThreadingMixIn.process_request_thread(self,request,client_address)
+			
+		def escape_forbidden_chars(self,data):
+			
+			if b"&" in data and b"&amp;" not in data:
+				data=data.replace(b"&",b"&amp;")
+			return data
 		
 		def _marshaled_dispatch(self, data, dispatch_method = None, path = None, n4d_extra_info=None):
 
 			self.allow_none=True
 			try:
-
-				params, method = xmlrpc.client.loads(data)
+				new_data=self.escape_forbidden_chars(data)
+				params, method = xmlrpc.client.loads(new_data)
 				params=(n4d_extra_info,)+params
 
 				if dispatch_method is not None:
@@ -138,6 +153,7 @@ class N4dServer:
 		self.server=N4dServer.ThreadedXMLRPCServer((host,port),self.handler,DEBUG)
 		#allow_none
 		SimpleXMLRPCDispatcher.__init__(self.server,allow_none=True)
+		self.server.running=False
 		
 		self.wrap_ssl()
 		self.server.register_instance(self.core)
@@ -158,7 +174,9 @@ class N4dServer:
 		SimpleXMLRPCDispatcher.__init__(self.secondary_server,allow_none=True)
 		
 		if ssl_wrapped:
-			self.secondary_server.socket=ssl.wrap_socket(self.secondary_server.socket,N4dServer.N4D_KEYFILE,N4dServer.N4D_CERTFILE)
+			context = ssl.SSLContext( ssl.PROTOCOL_TLS_SERVER )
+			context.load_cert_chain( N4dServer.N4D_CERTFILE, N4dServer.N4D_KEYFILE )
+			self.secondary_server.socket = context.wrap_socket( self.secondary_server.socket )
 			
 		self.secondary_server.register_instance(self.core)
 			
@@ -168,7 +186,9 @@ class N4dServer:
 	def wrap_ssl(self):
 		
 		if N4dServer.SECURE_SERVER:
-			self.server.socket=ssl.wrap_socket(self.server.socket,N4dServer.N4D_KEYFILE,N4dServer.N4D_CERTFILE)
+			context = ssl.SSLContext( ssl.PROTOCOL_TLS_SERVER )
+			context.load_cert_chain( N4dServer.N4D_CERTFILE, N4dServer.N4D_KEYFILE )
+			self.server.socket=context.wrap_socket(self.server.socket)
 			
 		self.is_server_secured=N4dServer.SECURE_SERVER
 			

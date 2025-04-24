@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import PAM
+import multiprocessing
 
 class PamManager:
 	
@@ -24,11 +25,22 @@ class PamManager:
 				else:
 					return None
 			return resp
+			
+		def validate(ret_queue):
+			try:
+				self.auth.authenticate()
+				self.auth.acct_mgmt()
+				ret_queue.put(True)
+			except Exception as e:
+				ret_queue.put(False)
+			
+		
 		self.auth.set_item(PAM.PAM_USER, user)
 		self.auth.set_item(PAM.PAM_CONV,pam_conv)
-		try:
-			self.auth.authenticate()
-			self.auth.acct_mgmt()
-			return True
-		except Exception as e:
-			return False
+		
+		ret=multiprocessing.Queue()
+		p=multiprocessing.Process(target=validate,args=(ret,))
+		p.start()
+		p.join()
+		return(ret.get())
+		
