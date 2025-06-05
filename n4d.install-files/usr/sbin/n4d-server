@@ -1,4 +1,4 @@
-#! /usr/bin/python3
+#! /usr/bin/python3 -u
 
 import n4d.server
 s=n4d.server.N4dServer()
