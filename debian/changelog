@@ -1,3 +1,10 @@
+n4d (0.1958) jammy; urgency=medium
+
+  * n4d-server is executed with python3 -u to force unbuffered stdout and
+    stderr 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 05 Jun 2025 09:26:47 +0200
+
 n4d (0.1957) jammy; urgency=medium
 
   * better clientmanager management
