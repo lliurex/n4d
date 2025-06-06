@@ -1,3 +1,9 @@
+n4d (1.2.3) noble; urgency=medium
+
+  * Missing Type=notify in n4d.service unit
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 06 Jun 2025 11:57:34 +0200
+
 n4d (1.2.2) noble; urgency=medium
 
   * n4d-server is executed with python3 -u to force unbuffered stdout and
