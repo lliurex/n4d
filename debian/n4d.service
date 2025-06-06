@@ -5,6 +5,7 @@ After=network-online.target
 
 
 [Service]
+Type=notify
 User=root
 ExecStart=/usr/sbin/n4d-server
 StandardOutput=journal
