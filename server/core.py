@@ -142,18 +142,22 @@ class Core:
 		
 	#def execute_startups
 	
-	def _startup_launcher(self):
+	def _startup_launcher(self,force=False, filter_variable_name="",filter_variable_value=None):
 		
 		self.dprint("[CORE] Executing startups ... ")
+		
+		if filter_variable_name=="":
+			filter_variable_name=None
 		
 		withstartup = []
 		next_objects = []
 		
 		for x in self.plugin_manager.plugins:
 			try:
+				
 				if not self.plugin_manager.plugins[x]["found"]:
 					continue
-				if x in self.executed_startups:
+				if x in self.executed_startups and not force:
 					continue
 				if not hasattr(self.plugin_manager.plugins[x]["object"],'startup'):
 					continue
@@ -164,7 +168,15 @@ class Core:
 				options["boot"]=self.boot
 				if not os.path.exists(Core.RUN_TOKEN):
 					options["boot"]=True
-				withstartup.append((self.plugin_manager.plugins[x]["object"],options))
+					
+				if force:
+					options["boot"]=True
+					
+				if filter_variable_name==None or (hasattr(self.plugin_manager.plugins[x]["object"],filter_variable_name) and getattr(self.plugin_manager.plugins[x]["object"],filter_variable_name)==filter_variable_value ):
+					withstartup.append((self.plugin_manager.plugins[x]["object"],options))
+					if force:
+						if self.plugin_manager.plugins[x]["object"].__class__.__name__ in self.executed_startups:
+							self.executed_startups.remove(self.plugin_manager.plugins[x]["object"].__class__.__name__)
 				
 			except Exception as e:
 				self.dprint(e)
@@ -1213,7 +1225,13 @@ class Core:
 		
 	#def get_machine_id
 	
-	
+	def startup_on_demand(self, filter_variable_name, filter_variable_value):
+		
+		self.startup_thread=threading.Thread(target=self._startup_launcher,name="N4d.Core.execute_startups thread",args=(True,filter_variable_name,filter_variable_value))
+		self.startup_thread.daemon=True
+		self.startup_thread.start()
+		
+	#def startup_on_demand	
 
 	
 	
