@@ -5,7 +5,7 @@ def startup_on_demand(self,auth, filter_variable_name, filter_variable_value):
 	
 	if ret["status"]==0:	
 		#internal core funciton
-		self.startup_on_demand(True,filter_variable_name,filter_variable_value)
+		self.startup_on_demand(filter_variable_name,filter_variable_value)
 		return  n4d.responses.build_successful_call_response(True)
 
 	else:
