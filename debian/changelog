@@ -1,3 +1,9 @@
+n4d (0.1958ubuntu1) UNRELEASED; urgency=medium
+
+  * Added startup_on_demand builtin. Needs auth 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 11 Jun 2025 12:45:09 +0200
+
 n4d (0.1958) jammy; urgency=medium
 
   * n4d-server is executed with python3 -u to force unbuffered stdout and
