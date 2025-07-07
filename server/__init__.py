@@ -10,6 +10,7 @@ import sys
 import traceback
 import threading
 import systemd.daemon 
+import os
 
 import locale
 locale.setlocale(locale.LC_ALL, 'C.UTF-8')
@@ -30,6 +31,68 @@ class N4dServer:
 
 	class N4dCallHandler(SimpleXMLRPCRequestHandler):
 		
+		def do_GET(self):
+			
+			if not self.core.http_manager.ENABLED:
+				self.report_404()
+				return
+			
+			if self.core.http_manager.LISTING_ENABLED and self.path=="/":
+				self.send_response(200)
+				self.send_header("Content-type", "text/html")
+				self.end_headers()
+				main_content="<html><h1>N4D HttpManager</h1>%s</html>"
+				section_header="<h2>%s</h2>"
+				download_item="<a href='%s/%s'>%s</a><br>"
+				
+				content=""
+				for section in self.core.http_manager.downloads:
+					if len(self.core.http_manager.downloads[section])>0:
+						section_txt=section_header%section
+						content+=section_txt
+						for download in self.core.http_manager.downloads[section]:
+							file_name=download.split("/")[-1]
+							content+=download_item%(section,file_name,file_name)
+				
+				content=main_content%content
+				self.wfile.write(content.encode())
+				return
+			
+			if self.path != "/":
+			
+				try:
+					print(self.path)
+					section,file_name=self.path.lstrip("/").split("/")
+			
+					if section in self.core.http_manager.downloads:
+						for filename in self.core.http_manager.downloads[section]:
+							sfile_name=filename.split("/")[-1]
+							if sfile_name==file_name:
+								self.send_response(200)
+								self.send_header('Content-Type', 'application/octet-stream')
+								self.send_header('Content-Disposition', f'attachment; filename="{filename}"')
+								self.end_headers()
+								if os.path.exists(filename):
+									with open(filename, 'rb') as f:
+										self.wfile.write(f.read())
+								else:
+									self.report_404()
+									
+					else:
+						self.report_404()
+					
+					return
+					
+				except Exception as e:
+					self.report_404()
+					return
+			
+			self.report_404()
+			return
+					
+		#def do_GET
+				
+			
 		def do_POST(self):
 			#Copied from libpython3.6-stdlib:amd64: /usr/lib/python3.6/xmlrpc/server.py
 			
@@ -149,6 +212,7 @@ class N4dServer:
 		self.server_port=port
 		self.secondary=init_secondary
 		self.handler=N4dServer.N4dCallHandler
+		self.handler.core=self.core
 		self.handler.encode_threshold=None
 		self.server=N4dServer.ThreadedXMLRPCServer((host,port),self.handler,DEBUG)
 		#allow_none

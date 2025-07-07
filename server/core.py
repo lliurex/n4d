@@ -23,6 +23,7 @@ import n4d.server.pammanager
 import n4d.server.variablesmanager
 import n4d.server.ticketsmanager
 import n4d.server.clientmanager
+import n4d.server.httpmanager
 
 
 ANONYMOUS_AUTH=50
@@ -126,6 +127,7 @@ class Core:
 		self.variables_manager=n4d.server.variablesmanager.VariablesManager()
 		self.clients_manager=n4d.server.clientmanager.ClientManager()
 		self.tickets_manager=n4d.server.ticketsmanager.TicketsManager()
+		self.http_manager=n4d.server.httpmanager.HttpManager()
 		self.load_builtin_functions()
 		self.load_plugins()
 		self.execute_startups()
