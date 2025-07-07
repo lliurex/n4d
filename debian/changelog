@@ -1,4 +1,4 @@
-n4d (0.1959ubuntu1) jammy; urgency=medium
+n4d (0.1960) jammy; urgency=medium
 
   * New httpmanager unit. Allows to serve files through https using built-in
     calls.
