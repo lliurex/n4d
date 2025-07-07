@@ -1,3 +1,13 @@
+n4d (0.1959ubuntu1) jammy; urgency=medium
+
+  * New httpmanager unit. Allows to serve files through https using built-in
+    calls.
+       - add_download(auth,section,file)
+       - delete_download(auth,section,file,delete_file=False)
+       - get_download_list(section=None) 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 07 Jul 2025 10:44:10 +0200
+
 n4d (0.1959) jammy; urgency=medium
 
   * Added startup_on_demand(auth,variable_filter_name,variable_filter_value) builtin 
