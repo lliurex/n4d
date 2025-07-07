@@ -11,6 +11,7 @@ class HttpManager:
 	DEBUG=True
 	
 	SECTION_NOT_FOUND_ERROR=-1
+	FILE_NOT_FOUND_ERROR=-10
 	
 	def __init__(self):
 		
@@ -41,7 +42,10 @@ class HttpManager:
 			self.downloads[section]=[]
 		
 		if file_path not in self.downloads[section]:
-			self.downloads[section].append(file_path)
+			if os.path.exists(file_path):
+				self.downloads[section].append(file_path)
+			else:
+				return n4d.responses.build_failed_call_response(HttpManager.FILE_NOT_FOUND_ERROR,"File not found")
 		
 		self.save_variable()
 		
@@ -64,7 +68,7 @@ class HttpManager:
 			ret=self.downloads
 		else:
 			if section not in self.downloads:
-				n4d.responses.build_failed_call_response(HttpManager.SECTION_NOT_FOUND_ERROR,"Section not found")
+				return n4d.responses.build_failed_call_response(HttpManager.SECTION_NOT_FOUND_ERROR,"Section not found")
 			else:
 				ret=self.downloads[section]
 		
