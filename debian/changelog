@@ -1,4 +1,4 @@
-n4d (0.1960.3) jammy; urgency=medium
+n4d (0.1960.4) jammy; urgency=medium
 
   * added get_download_urls(section) builtin function
 
