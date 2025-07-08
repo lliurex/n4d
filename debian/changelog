@@ -1,3 +1,9 @@
+n4d (0.1960.3) jammy; urgency=medium
+
+  * added get_download_urls(section) builtin function
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Tue, 08 Jul 2025 11:30:28 +0200
+
 n4d (0.1960.2) jammy; urgency=medium
 
   * httpmanager.add_download checks if file exists 
