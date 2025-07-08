@@ -76,6 +76,23 @@ class HttpManager:
 		
 	#def get_download_list
 	
+	def get_download_urls(self, section):
+		
+		if section==None or section not in self.downloads:
+			return n4d.responses.build_failed_call_response(HttpManager.SECTION_NOT_FOUND_ERROR,"Section not found")
+		
+		download_list=[]
+		
+		for download in self.downloads[section]:
+			file_name=download.split("/")[1]
+			url="https://%s:9779/"+"%s/%s"%(section,file_name)
+			download_list.append(url)
+			
+		return n4d.responses.build_successful_call_response(download_list)
+		
+		
+	#def get_download_urls
+	
 	def delete_download(self,section,file_path,delete_file=False):
 	
 		if section in self.downloads:
