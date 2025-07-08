@@ -84,7 +84,7 @@ class HttpManager:
 		download_list=[]
 		
 		for download in self.downloads[section]:
-			file_name=download.split("/")[1]
+			file_name=download.split("/")[-1]
 			url="https://%s:9779/"+"%s/%s"%(section,file_name)
 			download_list.append(url)
 			
