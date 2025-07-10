@@ -12,6 +12,7 @@ class HttpManager:
 	
 	SECTION_NOT_FOUND_ERROR=-1
 	FILE_NOT_FOUND_ERROR=-10
+	FILE_ALREADY_EXISTS_ERROR=-20
 	
 	def __init__(self):
 		
@@ -43,7 +44,10 @@ class HttpManager:
 		
 		if file_path not in self.downloads[section]:
 			if os.path.exists(file_path):
-				self.downloads[section].append(file_path)
+				if file_path not in self.downloads[section]:
+					self.downloads[section].append(file_path)
+				else:
+					return n4d.responses.build_failed_call_response(HttpManager.FILE_ALREADY_EXISTS_ERROR,"File was previously added.")
 			else:
 				return n4d.responses.build_failed_call_response(HttpManager.FILE_NOT_FOUND_ERROR,"File not found")
 		
@@ -102,8 +106,10 @@ class HttpManager:
 				if delete_file:
 					if os.path.exists(file_path):
 						os.remove(file_path)
-				
-		return n4d.responses.build_successful_call_response()
+				n4d.responses.build_successful_call_response()
+			
+		
+		return n4d.responses.build_failed_call_response(HttpManager.FILE_NOT_FOUND_ERROR,"File not found")
 	
 	#def delete_download
 
