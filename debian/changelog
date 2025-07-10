@@ -1,3 +1,9 @@
+n4d (0.1961) jammy; urgency=medium
+
+  * Reporting error whether added or deleted files in httpmanager exist. 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 10 Jul 2025 08:40:42 +0200
+
 n4d (0.1960.4) jammy; urgency=medium
 
   * added get_download_urls(section) builtin function
