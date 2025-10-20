@@ -1223,7 +1223,7 @@ class Core:
 	
 	def get_machine_id(self):
 		
-		return sef.clients_manager.get_machine_id()
+		return self.clients_manager.get_machine_id()
 		
 	#def get_machine_id
 	
