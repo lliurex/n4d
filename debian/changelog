@@ -1,3 +1,9 @@
+n4d (1.3.2) noble; urgency=medium
+
+  * Moving systemd unit to netork-pre
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Mon, 27 Oct 2025 10:27:09 +0100
+
 n4d (1.3.1) noble; urgency=medium
 
   * Fix typo
