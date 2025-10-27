@@ -6,7 +6,7 @@ def add_download(self,auth,section,file_path):
 	ret=self.builtin_validation(auth,allowed_groups)
 	
 	if ret["status"]==0:	
-		return self.core.http_manager.add_download(section,file_path)
+		return self.http_manager.add_download(section,file_path)
 	else:
 		return ret
 

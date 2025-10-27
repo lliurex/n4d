@@ -11,6 +11,8 @@ class HttpManager:
 	DEBUG=True
 	
 	SECTION_NOT_FOUND_ERROR=-1
+	FILE_NOT_FOUND_ERROR=-10
+	FILE_ALREADY_EXISTS_ERROR=-20
 	
 	def __init__(self):
 		
@@ -41,7 +43,13 @@ class HttpManager:
 			self.downloads[section]=[]
 		
 		if file_path not in self.downloads[section]:
-			self.downloads[section].append(file_path)
+			if os.path.exists(file_path):
+				if file_path not in self.downloads[section]:
+					self.downloads[section].append(file_path)
+				else:
+					return n4d.responses.build_failed_call_response(HttpManager.FILE_ALREADY_EXISTS_ERROR,"File was previously added.")
+			else:
+				return n4d.responses.build_failed_call_response(HttpManager.FILE_NOT_FOUND_ERROR,"File not found")
 		
 		self.save_variable()
 		
@@ -64,13 +72,30 @@ class HttpManager:
 			ret=self.downloads
 		else:
 			if section not in self.downloads:
-				n4d.responses.build_failed_call_response(HttpManager.SECTION_NOT_FOUND_ERROR,"Section not found")
+				return n4d.responses.build_failed_call_response(HttpManager.SECTION_NOT_FOUND_ERROR,"Section not found")
 			else:
 				ret=self.downloads[section]
 		
 		return n4d.responses.build_successful_call_response(ret)
 		
 	#def get_download_list
+	
+	def get_download_urls(self, section):
+		
+		if section==None or section not in self.downloads:
+			return n4d.responses.build_failed_call_response(HttpManager.SECTION_NOT_FOUND_ERROR,"Section not found")
+		
+		download_list=[]
+		
+		for download in self.downloads[section]:
+			file_name=download.split("/")[-1]
+			url="https://%s:9779/"+"%s/%s"%(section,file_name)
+			download_list.append(url)
+			
+		return n4d.responses.build_successful_call_response(download_list)
+		
+		
+	#def get_download_urls
 	
 	def delete_download(self,section,file_path,delete_file=False):
 	
@@ -81,8 +106,10 @@ class HttpManager:
 				if delete_file:
 					if os.path.exists(file_path):
 						os.remove(file_path)
-				
-		return n4d.responses.build_successful_call_response()
+				n4d.responses.build_successful_call_response()
+			
+		
+		return n4d.responses.build_failed_call_response(HttpManager.FILE_NOT_FOUND_ERROR,"File not found")
 	
 	#def delete_download
 

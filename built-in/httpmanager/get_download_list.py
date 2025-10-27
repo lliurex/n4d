@@ -1,7 +1,7 @@
 
 def get_download_list(self,section=None):
 
-	return self.core.http_manager.delete_download(section,file_path,delete_file)
+	return self.http_manager.get_download_list(section)
 
 #def get_download_list
 
