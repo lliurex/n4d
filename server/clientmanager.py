@@ -23,6 +23,7 @@ class ClientManager:
 		self.clients={}
 		self.core=n4d.server.core.Core.get_core()
 		self.server_id=None
+		self.registering=False
 		self.saving_lock=threading.Lock()
 		if not os.path.exists(ClientManager.RUN_DIR):
 			os.makedirs(ClientManager.RUN_DIR)
@@ -66,7 +67,11 @@ class ClientManager:
 
 	def register_to_server_on_demand(self):
 
+		while self.registering:
+			time.sleep(1)
+
 		try:
+			self.registering=True
 			ret=self.core.variables_manager.get_variable("REMOTE_VARIABLES_SERVER")
 			if ret["status"]==0:
 				remote_server=ret["return"]
@@ -87,7 +92,8 @@ class ClientManager:
 		except Exception as e:
 			self.dprint(e)
 			self.server_id=None
-			
+		
+		self.registering=False
 		return n4d.responses.build_successful_call_response(self.server_id)
 		
 	#def register_to_server_on_demand
