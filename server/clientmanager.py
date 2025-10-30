@@ -23,6 +23,7 @@ class ClientManager:
 		self.clients={}
 		self.core=n4d.server.core.Core.get_core()
 		self.server_id=None
+		self.registering=False
 		self.saving_lock=threading.Lock()
 		if not os.path.exists(ClientManager.RUN_DIR):
 			os.makedirs(ClientManager.RUN_DIR)
@@ -63,36 +64,44 @@ class ClientManager:
 		return  n4d.responses.build_successful_call_response(machine_id)
 		
 	#def get_machine_id
-	
+
+	def register_to_server_on_demand(self):
+
+		while self.registering:
+			time.sleep(1)
+
+		try:
+			self.registering=True
+			ret=self.core.variables_manager.get_variable("REMOTE_VARIABLES_SERVER")
+			if ret["status"]==0:
+				remote_server=ret["return"]
+				if remote_server==None:
+					return
+				server_ip=socket.gethostbyname(remote_server)
+				if server_ip not in self.core.get_all_ips():
+					
+					context=ssl._create_unverified_context()
+					c = xmlrpc.client.ServerProxy('https://%s:9779'%server_ip,context=context,allow_none=True)
+					mac=self.core.get_mac_from_device(self.core.route_get_ip(server_ip))
+					machine_id=self.get_machine_id()["return"]
+					if machine_id!=None:
+						ret=c.register_client("",mac,machine_id)
+						if ret["status"]==0:
+							self.server_id=ret["return"]
+			
+		except Exception as e:
+			self.dprint(e)
+			self.server_id=None
+		
+		self.registering=False
+		return n4d.responses.build_successful_call_response(self.server_id)
+		
+	#def register_to_server_on_demand
 	
 	def register_to_server(self):
 		
-		#self.dprint("Starting register thread...")
-		
 		while True:
-		
-			try:
-				ret=self.core.variables_manager.get_variable("REMOTE_VARIABLES_SERVER")
-				if ret["status"]==0:
-					remote_server=ret["return"]
-					if remote_server==None:
-						return
-					server_ip=socket.gethostbyname(remote_server)
-					if server_ip not in self.core.get_all_ips():
-						
-						context=ssl._create_unverified_context()
-						c = xmlrpc.client.ServerProxy('https://%s:9779'%server_ip,context=context,allow_none=True)
-						mac=self.core.get_mac_from_device(self.core.route_get_ip(server_ip))
-						machine_id=self.get_machine_id()["return"]
-						if machine_id!=None:
-							ret=c.register_client("",mac,machine_id)
-							if ret["status"]==0:
-								self.server_id=ret["return"]
-				
-			except Exception as e:
-				self.dprint(e)
-				self.server_id=None
-				
+			self.register_to_server_on_demand()
 			time.sleep(ClientManager.REGISTER_SLEEP_TIME)
 
 	#def register_n4d_instance_to_server
