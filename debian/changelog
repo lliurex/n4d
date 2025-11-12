@@ -1,3 +1,9 @@
+n4d (1.3.4) noble; urgency=medium
+
+  * Added delete option to n4d-vars
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 12 Nov 2025 12:12:38 +0100
+
 n4d (1.3.3) noble; urgency=medium
 
   * added register_to_server_on_demand built-in. Returns core.id from server,
