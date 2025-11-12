@@ -16,7 +16,7 @@ class N4dVars:
 	
 	def __init__(self):
 		
-		self.commands=["getvalues","listvars","setvalue","readinbox","emptytrash","createjson","help"]
+		self.commands=["getvalues","listvars","setvalue","delete","readinbox","emptytrash","createjson","help"]
 		context=ssl._create_unverified_context()
 		self.client=xmlrpc.client.ServerProxy("https://localhost:9779",context=context,allow_none=True)
 		
@@ -31,6 +31,7 @@ class N4dVars:
 		print("\tcreatejson VAR1 [VAR2...VARn] [--output OUTPUTFILE]")
 		print("")
 		print("\tsetvalue VAR VALUE")
+		print("\tdelete VAR")
 		print("\treadinbox")
 		print("\temptytrash\n")
 		
@@ -92,6 +93,19 @@ class N4dVars:
 						else:
 							print("modo offline")
 							self.set_value_offline(var,value)
+							
+					if data[1]=="delete":
+						try:
+							var=data[2]
+						except:
+							self.usage()
+							sys.exit(0)
+							
+						if self.is_n4d_running():
+							self.delete_variable(var)
+						else:
+							print("modo offline")
+							self.delete_variable_offline(var)							
 						
 					if data[1]=="readinbox":
 						if self.is_n4d_running():
@@ -216,6 +230,40 @@ class N4dVars:
 		return -1
 		
 	#def 
+	
+	def delete_variable(self,vname):
+		
+		key=self.read_key()
+		if key==None:
+			print("[!] Error reading n4d key to perform the operation")
+			return -1
+					
+		ret=self.client.delete_variable(key,vname)
+		if self.is_status_ok(ret):
+			return 0
+			
+		return -1
+		
+	#def delete_variable
+	
+	def delete_variable_offline(self,vname):
+		
+		key=self.read_key()
+		if key==None:
+			print("[!] Error reading n4d key to perform the operation")
+			return -1
+		
+		var_path = Path(VARIABLES_DIR + vname )
+		if os.path.exists(var_path):
+			os.remove(var_path)
+			return 0
+		else:
+			print("[!] Variable does not exist")
+		
+		return -1
+				
+		
+	#def delete_variable_offline
 	
 	def read_inbox(self):
 		
