@@ -1,7 +1,7 @@
 [Unit]
 Description=N4D Daemon
 Wants=network-pre.target
-After=network-pre.target
+Before=network-pre.target
 
 
 [Service]
