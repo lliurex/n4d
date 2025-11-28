@@ -1,6 +1,6 @@
-n4d (0.1964.4) jammy; urgency=medium
+n4d (0.1964.5) jammy; urgency=medium
 
-  * Setting timeout to variablesmanager
+  * Setting timeout to variablesmanager and clientmanager
 
  -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 28 Nov 2025 11:51:42 +0100
 
