@@ -6,6 +6,7 @@ import os
 import sys
 import copy
 import xmlrpc.client
+import socket
 import ssl
 import traceback
 import tarfile
@@ -29,11 +30,17 @@ class VariablesManager:
 	VARIABLES_RESTORE_ERROR=-35
 	REMOTE_SERVER_NOT_CONFIGURED_ERROR=-40
 	
+	DEFAULT_TIMEOUT=15
+	
 	LOCK_FILE=RUN_DIR+"lock"
 	
 	def __init__(self):
 
 		#this should be the first thing called
+		
+		self.current_timeout=VariablesManager.DEFAULT_TIMEOUT
+		self.timeout_error_counter=0
+		
 		self.core=n4d.server.core.Core.get_core()
 		
 		if os.path.exists(VariablesManager.LOCK_FILE):
@@ -235,14 +242,19 @@ class VariablesManager:
 
 			if remote_variable_server not in self.core.get_all_ips():
 				context=ssl._create_unverified_context()
+				socket.setdefaulttimeout(self.current_timeout)
 				s = xmlrpc.client.ServerProxy('https://%s:9779'%self.variables["REMOTE_VARIABLES_SERVER"]["value"],context=context,allow_none=True)
 				try:
 					ret=s.variable_exists(vname)
 					if ret["status"]==0:
 						variable_exists=ret["return"]
+					self.current_timeout=VariablesManager.DEFAULT_TIMEOUT
 
 				except Exception as e:
-					pass
+					
+					self.current_timeout=self.current_timeout/2
+				
+				socket.setdefaulttimeout(None)
 					#tback=traceback.format_exc()
 					#return n4d.responses.build_failed_call_response(VariablesManager.REMOTE_VARIABLES_SERVER_ERROR,str(e),tback)			
 			
@@ -371,6 +383,7 @@ class VariablesManager:
 
 			if remote_variable_server not in self.core.get_all_ips():
 				context=ssl._create_unverified_context()
+				
 				s = xmlrpc.client.ServerProxy('https://%s:9779'%self.variables["REMOTE_VARIABLES_SERVER"]["value"],context=context,allow_none=True)
 				try:
 					ret=s.get_variable(name,full_description)
