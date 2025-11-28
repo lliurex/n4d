@@ -31,6 +31,7 @@ class VariablesManager:
 	REMOTE_SERVER_NOT_CONFIGURED_ERROR=-40
 	
 	DEFAULT_TIMEOUT=8
+	MINIMUM_TIMEOUT=2
 	
 	LOCK_FILE=RUN_DIR+"lock"
 	
@@ -253,6 +254,8 @@ class VariablesManager:
 				except Exception as e:
 					
 					self.current_timeout=self.current_timeout/2
+					if self.current_timeout < VariablesManager.MINIMUM_TIMEOUT:
+						self.current_timeout=VariablesManager.MINIMUM_TIMEOUT
 				
 				socket.setdefaulttimeout(None)
 					#tback=traceback.format_exc()
@@ -396,6 +399,8 @@ class VariablesManager:
 				except Exception as e:
 					tback=traceback.format_exc()
 					self.current_timeout=self.current_timeout/2
+					if self.current_timeout < VariablesManager.MINIMUM_TIMEOUT:
+						self.current_timeout=VariablesManager.MINIMUM_TIMEOUT
 					socket.setdefaulttimeout(None)
 					return n4d.responses.build_failed_call_response(VariablesManager.REMOTE_VARIABLES_SERVER_ERROR,str(e),tback)
 				
