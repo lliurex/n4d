@@ -383,15 +383,20 @@ class VariablesManager:
 
 			if remote_variable_server not in self.core.get_all_ips():
 				context=ssl._create_unverified_context()
+				socket.setdefaulttimeout(self.current_timeout)
 				
 				s = xmlrpc.client.ServerProxy('https://%s:9779'%self.variables["REMOTE_VARIABLES_SERVER"]["value"],context=context,allow_none=True)
 				try:
 					ret=s.get_variable(name,full_description)
+					self.current_timeout=VariablesManager.DEFAULT_TIMEOUT
+					socket.setdefaulttimeout(None)
 					if ret["status"]==0:
 						return ret
 
 				except Exception as e:
 					tback=traceback.format_exc()
+					self.current_timeout=self.current_timeout/2
+					socket.setdefaulttimeout(None)
 					return n4d.responses.build_failed_call_response(VariablesManager.REMOTE_VARIABLES_SERVER_ERROR,str(e),tback)
 				
 		return n4d.responses.build_failed_call_response(VariablesManager.VARIABLE_NOT_FOUND_ERROR,"Variable not found")
