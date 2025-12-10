@@ -1,3 +1,9 @@
+n4d (0.1964.7) jammy; urgency=medium
+
+  * Fixed settimeout to setdefaulttimeout 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 10 Dec 2025 09:53:29 +0100
+
 n4d (0.1964.6) jammy; urgency=medium
 
   * Setting timeout=8 to variablesmanager and clientmanager
