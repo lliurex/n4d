@@ -94,7 +94,7 @@ class ClientManager:
 			self.dprint(e)
 			self.server_id=None
 		
-		socket.settimeout(None)
+		socket.setdefaulttimeout(None)
 		self.registering=False
 		return n4d.responses.build_successful_call_response(self.server_id)
 		
