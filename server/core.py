@@ -1227,6 +1227,12 @@ class Core:
 		
 	#def get_machine_id
 	
+	def get_n4d_id(self):
+		
+		return self.id
+		
+	#def get_n4d_id
+	
 	def startup_on_demand(self, filter_variable_name, filter_variable_value):
 		
 		self.startup_thread=threading.Thread(target=self._startup_launcher,name="N4d.Core.execute_startups thread",args=(True,filter_variable_name,filter_variable_value))
