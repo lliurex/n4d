@@ -1,3 +1,11 @@
+n4d (0.1966) jammy; urgency=medium
+
+  * Returning None as value when get_variable fails (with status -1).
+    setdefauttimeout might be causing some problems on startup with classroom
+    clients.
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 17 Dec 2025 12:36:56 +0100
+
 n4d (0.1965) jammy; urgency=medium
 
   * Adding get_n4d_id built-in 
