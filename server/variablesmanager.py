@@ -373,7 +373,7 @@ class VariablesManager:
 
 					except Exception as e:
 						tback=traceback.format_exc()
-						return n4d.responses.build_failed_call_response(VariablesManager.REMOTE_VARIABLES_SERVER_ERROR,str(e),tback)
+						return n4d.responses.build_failed_call_response(VariablesManager.REMOTE_VARIABLES_SERVER_ERROR,None,tback)
 				
 				
 		elif "REMOTE_VARIABLES_SERVER" in self.variables and self.variables["REMOTE_VARIABLES_SERVER"]["value"]!=None:
@@ -402,9 +402,9 @@ class VariablesManager:
 					if self.current_timeout < VariablesManager.MINIMUM_TIMEOUT:
 						self.current_timeout=VariablesManager.MINIMUM_TIMEOUT
 					socket.setdefaulttimeout(None)
-					return n4d.responses.build_failed_call_response(VariablesManager.REMOTE_VARIABLES_SERVER_ERROR,str(e),tback)
+					return n4d.responses.build_failed_call_response(VariablesManager.REMOTE_VARIABLES_SERVER_ERROR,None,tback)
 				
-		return n4d.responses.build_failed_call_response(VariablesManager.VARIABLE_NOT_FOUND_ERROR,"Variable not found")
+		return n4d.responses.build_failed_call_response(VariablesManager.VARIABLE_NOT_FOUND_ERROR,None)
 		
 	#def get_variable
 	
