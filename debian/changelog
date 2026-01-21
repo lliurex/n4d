@@ -1,3 +1,10 @@
+n4d (0.1967) jammy; urgency=medium
+
+  * Fixed unit to comply with newer systemd.unit rules. Should try to restart
+    if it fails at least 10 times (10 secs per try, up to 100s in total)
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 21 Jan 2026 13:05:06 +0100
+
 n4d (0.1966) jammy; urgency=medium
 
   * Returning None as value when get_variable fails (with status -1).
