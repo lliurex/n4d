@@ -1,3 +1,20 @@
+n4d (1.3.5) noble; urgency=medium
+
+  * Merge with upstream
+    * Moving systemd service to network-pre
+    * Setting timeout=8 to variablesmanager and clientmanager
+    * If remote_Variable_server fails, timeout gets divided by 2
+    * Minimum timeout is 2
+    * Fixed settimeout to setdefaulttimeout 
+    * Adding get_n4d_id built-in 
+    * Returning None as value when get_variable fails (with status -1).
+    setdefauttimeout might be causing some problems on startup with classroom
+    clients.
+    * Fixed unit to comply with newer systemd.unit rules. Should try to restart
+    if it fails at least 10 times (10 secs per try, up to 100s in total) 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Thu, 09 Apr 2026 13:27:28 +0200
+
 n4d (1.3.4) noble; urgency=medium
 
   * Added delete option to n4d-vars
