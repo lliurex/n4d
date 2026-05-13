@@ -1,4 +1,4 @@
-n4d (0.1968) jammy; urgency=medium
+n4d (0.1968.1) jammy; urgency=medium
 
   * Added wait until apt is finished as well as dpkg before executing oneshots 
 
