@@ -226,7 +226,7 @@ class Core:
 				time.sleep(sleep_time)
 				
 		# wait for dpkgs to end
-		while self.find_process("dpkg") or self.find_process("apt"):
+		while self.find_process("dpkg") or self.find_process("apt") or self.find_process("lliurex-upgrade"):
 			time.sleep(sleep_time)
 		
 		self.dprint("Executing %s oneshots..."%len(one_shot_list))
