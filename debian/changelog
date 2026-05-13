@@ -1,6 +1,6 @@
-n4d (0.1968.1) jammy; urgency=medium
+n4d (0.1968.2) jammy; urgency=medium
 
-  * Added wait until apt is finished as well as dpkg before executing oneshots 
+  * Added wait until apt or lliurex-upgrade is finished as well as dpkg before executing oneshots 
 
  -- Hector Garcia Huerta <hectorgh@gmail.com>  Wed, 13 May 2026 10:57:41 +0200
 
