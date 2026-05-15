@@ -238,7 +238,7 @@ class Core:
 			lock_file="/var/lib/dpkg/lock-frontend"
 			
 			try:
-				fd = os.open(LOCK_FILE, os.O_RDWR | os.O_CREAT)
+				fd = os.open(lock_file, os.O_RDWR | os.O_CREAT)
 				try:
 					fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
 					fcntl.flock(fd, fcntl.LOCK_UN)
