@@ -1,3 +1,10 @@
+n4d (0.1968.3) jammy; urgency=medium
+
+  * oneshots also wait for /var/lib/dpkg/lock-frontend not be locked. If it
+    fails after 20 minutes of tries, it gives up until next boot 
+
+ -- Hector Garcia Huerta <hectorgh@gmail.com>  Fri, 15 May 2026 10:05:18 +0200
+
 n4d (0.1968.2) jammy; urgency=medium
 
   * Added wait until apt or lliurex-upgrade is finished as well as dpkg before executing oneshots 
