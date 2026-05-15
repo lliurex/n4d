@@ -256,7 +256,7 @@ class Core:
 				return False
 			
 		#def
-		max_tries = 1200
+		max_tries = 2400
 		count = 0
 		while is_dpkg_running():
 			count+=1
