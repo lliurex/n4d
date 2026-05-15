@@ -224,12 +224,12 @@ class Core:
 		# wait for startups
 		if wait_for_startups:
 			while self.startup_thread.is_alive():
-				self.dprint("[ONESHOTS] Waiting for startups to finish...")
+				#self.dprint("[ONESHOTS] Waiting for startups to finish...")
 				time.sleep(sleep_time)
 				
 		# wait for dpkgs to end
 		while self.find_process("dpkg") or self.find_process("apt") or self.find_process("apt-get") or self.find_process("lliurex-upgrade"):
-			self.dprint("[ONESHOTS] Waiting for dpkg process to finish...")
+			#self.dprint("[ONESHOTS] Waiting for dpkg process to finish...")
 			time.sleep(sleep_time)
 			
 		# lets really make sure
@@ -247,15 +247,16 @@ class Core:
 					
 				except BlockingIOError:
 					os.close(fd)
-					self.dprint("[ONESHOTS] Waiting for %s to be unlocked..."%lock_file)
+					#self.dprint("[ONESHOTS] Waiting for %s to be unlocked..."%lock_file)
 					return True
 				
 				
 			except:
-				self.dprint("[ONESHOTS] Failed to check %s"%lock_file)
+				#self.dprint("[ONESHOTS] Failed to check %s"%lock_file)
 				return False
-			
+
 		#def
+		
 		max_tries = 2400
 		count = 0
 		while is_dpkg_running():
@@ -266,7 +267,6 @@ class Core:
 				self.dprint("[ONESHOTS] %s is locked. Giving up after %s seconds until next boot"%(count*sleep_time))
 				return False
 			
-		
 		
 		self.dprint("Executing %s oneshots..."%len(one_shot_list))
 		for item in enumerate(one_shot_list):
