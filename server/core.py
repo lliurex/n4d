@@ -15,6 +15,7 @@ import datetime
 import traceback
 import socket
 import psutil
+import fcntl
 
 import n4d.responses
 
@@ -223,11 +224,49 @@ class Core:
 		# wait for startups
 		if wait_for_startups:
 			while self.startup_thread.is_alive():
+				self.dprint("[ONESHOTS] Waiting for startups to finish...")
 				time.sleep(sleep_time)
 				
 		# wait for dpkgs to end
-		while self.find_process("dpkg") or self.find_process("apt") or self.find_process("lliurex-upgrade"):
+		while self.find_process("dpkg") or self.find_process("apt") or self.find_process("apt-get") or self.find_process("lliurex-upgrade"):
+			self.dprint("[ONESHOTS] Waiting for dpkg process to finish...")
 			time.sleep(sleep_time)
+			
+		# lets really make sure
+		def is_dpkg_running():
+			
+			lock_file="/var/lib/dpkg/lock-frontend"
+			
+			try:
+				fd = os.open(LOCK_FILE, os.O_RDWR | os.O_CREAT)
+				try:
+					fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
+					fcntl.flock(fd, fcntl.LOCK_UN)
+					os.close(fd)
+					return False
+					
+				except BlockingIOError:
+					os.close(fd)
+					self.dprint("[ONESHOTS] Waiting for %s to be unlocked..."%lock_file)
+					return True
+				
+				
+			except:
+				self.dprint("[ONESHOTS] Failed to check %s"%lock_file)
+				return False
+			
+		#def
+		max_tries = 1200
+		count = 0
+		while is_dpkg_running():
+			count+=1
+			if count < max_tries:
+				time.sleep(sleep_time)
+			else:
+				self.dprint("[ONESHOTS] %s is locked. Giving up after %s seconds until next boot"%(count*sleep_time))
+				return False
+			
+		
 		
 		self.dprint("Executing %s oneshots..."%len(one_shot_list))
 		for item in enumerate(one_shot_list):
